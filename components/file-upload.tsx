@@ -31,6 +31,7 @@ export default function FileUpload({ onUploadComplete }: FileUploadProps) {
       const formData = new FormData()
       formData.append("file", file)
 
+      // kirim file ke backend dengan next api router
       const response = await fetch("/api/upload", {
         method: "POST",
         body: formData,

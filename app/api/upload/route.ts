@@ -41,26 +41,27 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Upload to Vercel Blob
+    // Upload to Vercel Blob, function untuk upload ke vercel blob provider
     const blob = await put(fileToUpload.name, fileToUpload, {
       access: "public",
+      addRandomSuffix: true //nama filenya acak
     })
 
     // Save metadata to database
     const fileRecord = await prisma.file.create({
       data: {
-        name: file.name.replace(/\.[^/.]+$/, ""), // Remove extension
+        name: file.name.replace(/\.[^/.]+$/, ""), 
         originalName: file.name,
         size: file.size,
-        compressedSize: isImage ? compressedSize : null,
-        type: file.type.split("/")[0], // image, video, etc.
+        type: file.type.split("/")[0], 
         mimeType: file.type,
         blobUrl: blob.url,
         folder: (formData.get("folder") as string) || null,
         tags: [],
-        isCompressed: isImage && compressedSize < file.size,
       },
     })
+
+    
 
     return NextResponse.json(fileRecord)
   } catch (error) {
